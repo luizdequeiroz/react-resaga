@@ -1,0 +1,17 @@
+{
+  "name": "react-generalizers",
+  "version": "1.0.0",
+  "description": "Generalizing configuration to use of Redux, ReduxForm and Saga",
+  "main": "index.js",
+  "author": "Luiz de Queiroz",
+  "license": "ISC",
+  "dependencies": {
+    "react-dom": "^16.12.0",
+    "react-redux": "^7.1.3",
+    "redux": "^4.0.5",
+    "redux-form": "^8.2.6",
+    "redux-multi": "^0.1.12",
+    "redux-saga": "^1.1.3",
+    "saga": "^4.0.0-alpha"
+  }
+}
