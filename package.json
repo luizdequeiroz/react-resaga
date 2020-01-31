@@ -1,6 +1,6 @@
 {
   "name": "react-generalizers",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Generalizing configuration to use of Redux and Saga",
   "main": "index.js",
   "author": "Luiz de Queiroz",
