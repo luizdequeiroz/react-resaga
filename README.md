@@ -1,2 +1,2 @@
 # react-generalizers
-Generalizing configuration to use of Redux, ReduxForm and Saga
+Generalizing configuration to use of Redux and Saga
