@@ -27,7 +27,7 @@ const storeSagaDevTools = () => sagaConfiguration()(combineReducers(combination(
 
 const _dispatchers = {};
 
-export const Container = ({ children, sagas, devtools }) => {
+export const Container = ({ children, sagas = {}, devtools }) => {
 
     const provider = React.createElement(Provider, {
         store: sagas && devtools ? storeSagaDevTools() :
@@ -67,7 +67,7 @@ export const useReducers = (...keys) => {
         });
         return reducers;
     });
-
+    
     const dispatch = useDispatch();
     state.set = (key, value) => dispatch(set(key, value));
     Object.keys(_dispatchers).forEach(key => {
