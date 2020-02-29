@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { Provider, useSelector, useDispatch } from 'react-redux';
 import createSagaMiddleware from 'redux-saga';
@@ -67,17 +67,27 @@ export const useReducers = (...keys) => {
         });
         return reducers;
     });
-    
-    const dispatch = useDispatch();
-    state.set = (key, value) => dispatch(set(key, value));
-    Object.keys(_dispatchers).forEach(key => {
-        state[key] = (payload) => {
-            dispatch({ ..._dispatchers[key], payload });
-        };
-    });
 
     return state;
 };
+
+export const useDispatchers = () => {
+    const dispatch = useDispatch();
+    const dispatchers = {};
+
+    if (_dispatchers !== {}) {
+        Object.keys(_dispatchers).forEach(key => {
+            dispatchers[key] = useCallback(payload => {
+                dispatch({ ..._dispatchers[key], payload });
+            }, []);
+        });
+    }
+
+    return {
+        apply: (key, value) => dispatch(set(key, value)),
+        ...dispatchers
+    };
+}
 
 export const sagaMiddleware = _sagaMiddleware;
 export const set = (key, value) => ({ type: 'set', key, value });
