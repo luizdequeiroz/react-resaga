@@ -1,9 +1,11 @@
 import React from 'react';
-import { Container, useReducers, useDispatchers } from '../';
+import { Container, useReducers, useDispatchers, useSagas } from '../';
 import { render } from 'react-dom';
 
 function InputValue() {
     const { apply } = useDispatchers();
+    const { request } = useSagas();
+
     console.log('redering input');
 
     function keyUpHandle({ target: { value } }) {

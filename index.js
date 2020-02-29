@@ -25,9 +25,10 @@ const storeDevTools = () => createStore(combineReducers(combination()), devTools
 const storeSaga = () => sagaConfiguration()(combineReducers(combination()));
 const storeSagaDevTools = () => sagaConfiguration()(combineReducers(combination()), devToolsConfiguration());
 
+const _dispatchersSaga = {};
 const _dispatchers = {};
 
-export const Container = ({ children, sagas = {}, devtools }) => {
+export const Container = ({ children, sagas = {}, dispatchers = {}, devtools }) => {
 
     const provider = React.createElement(Provider, {
         store: sagas && devtools ? storeSagaDevTools() :
@@ -39,7 +40,7 @@ export const Container = ({ children, sagas = {}, devtools }) => {
     const watchers = [];
     Object.keys(sagas).forEach(key => {
         const saga = sagas[key];
-        _dispatchers[key] = ({ type: key });
+        _dispatchersSaga[key] = ({ type: key });
 
         function* watch() {
             yield takeEvery(key, saga);
@@ -47,6 +48,8 @@ export const Container = ({ children, sagas = {}, devtools }) => {
 
         watchers.push(watch());
     });
+
+    _dispatchers = dispatchers;
 
     function* root() {
         yield all(watchers);
@@ -73,8 +76,8 @@ export const useReducers = (...keys) => {
 
 export const useDispatchers = () => {
     const dispatch = useDispatch();
-    const dispatchers = {};
 
+    const dispatchers = {};
     if (_dispatchers !== {}) {
         Object.keys(_dispatchers).forEach(key => {
             dispatchers[key] = useCallback(payload => {
@@ -89,6 +92,21 @@ export const useDispatchers = () => {
     };
 }
 
+export const useSagas = () => {
+    if (_dispatchersSaga !== {}) {
+        const dispatch = useDispatch();
+
+        const dispatchers = {};
+        Object.keys(_dispatchersSaga).forEach(key => {
+            dispatchers[key] = useCallback(payload => {
+                dispatch({ ..._dispatchersSaga[key], payload });
+            }, []);
+        });
+
+        return dispatchers;
+    } else new Error('Saga use is not enabled');
+}
+
 export const sagaMiddleware = _sagaMiddleware;
 export const set = (key, value) => ({ type: 'set', key, value });
 export const dispatch = _put;
@@ -96,7 +114,9 @@ export const dispatch = _put;
 export default {
     Container,
     useReducers,
+    useDispatchers,
+    useSagas,
     sagaMiddleware: _sagaMiddleware,
     set,
-    dispatch: _put
+    dispatch: _put,
 };
