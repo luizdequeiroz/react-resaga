@@ -1,15 +1,17 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { Provider, useSelector, useDispatch } from 'react-redux';
 import createSagaMiddleware from 'redux-saga';
-import { all, takeEvery, put as _put } from 'redux-saga/effects';
+import { all, takeEvery, put } from 'redux-saga/effects';
 
-let _sagaMiddleware = createSagaMiddleware();
+const APPLY = 'apply';
+
+let sagaMiddleware = createSagaMiddleware();
 
 const genericReducer = (state = {}, action) => {
 
     switch (action.type) {
-        case 'set':
+        case APPLY:
             state[action.key] = action.value;
             return state;
         default: return state;
@@ -18,17 +20,16 @@ const genericReducer = (state = {}, action) => {
 
 const combination = () => ({ reducers: genericReducer });
 const devToolsConfiguration = () => window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__();
-const sagaConfiguration = () => applyMiddleware(_sagaMiddleware = createSagaMiddleware())(createStore);
+const sagaConfiguration = () => applyMiddleware(sagaMiddleware = createSagaMiddleware())(createStore);
 
 const store = () => createStore(combineReducers(combination()));
 const storeDevTools = () => createStore(combineReducers(combination()), devToolsConfiguration());
 const storeSaga = () => sagaConfiguration()(combineReducers(combination()));
 const storeSagaDevTools = () => sagaConfiguration()(combineReducers(combination()), devToolsConfiguration());
 
-const _dispatchersSaga = {};
 const _dispatchers = {};
 
-export const Container = ({ children, sagas = {}, dispatchers = {}, devtools }) => {
+export const Container = ({ children, sagas = {}, devtools }) => {
 
     const provider = React.createElement(Provider, {
         store: sagas && devtools ? storeSagaDevTools() :
@@ -40,7 +41,7 @@ export const Container = ({ children, sagas = {}, dispatchers = {}, devtools }) 
     const watchers = [];
     Object.keys(sagas).forEach(key => {
         const saga = sagas[key];
-        _dispatchersSaga[key] = ({ type: key });
+        _dispatchers[key] = ({ type: key });
 
         function* watch() {
             yield takeEvery(key, saga);
@@ -49,74 +50,54 @@ export const Container = ({ children, sagas = {}, dispatchers = {}, devtools }) 
         watchers.push(watch());
     });
 
-    _dispatchers = dispatchers;
-
     function* root() {
         yield all(watchers);
     }
 
-    _sagaMiddleware.run(root);
+    sagaMiddleware.run(root);
 
     return provider;
 };
 
 export const useReducers = (...keys) => {
-    const state = useSelector(state => {
-        const reducers = {};
-        keys.forEach(key => {
-            if (state) {
-                reducers[key] = state.reducers[key];
-            }
-        });
-        return reducers;
+
+    const reducers = {};
+    keys.forEach(key => {
+        reducers[key] = useSelector(state => state.reducers[key]);
     });
 
-    return state;
+    return reducers;
 };
 
-export const useDispatchers = () => {
-    const dispatch = useDispatch();
-
-    const dispatchers = {};
-    if (_dispatchers !== {}) {
-        Object.keys(_dispatchers).forEach(key => {
-            dispatchers[key] = useCallback(payload => {
-                dispatch({ ..._dispatchers[key], payload });
-            }, []);
-        });
-    }
-
-    return {
-        apply: (key, value) => dispatch(set(key, value)),
-        ...dispatchers
-    };
-}
-
 export const useSagas = () => {
-    if (_dispatchersSaga !== {}) {
+    if (JSON.stringify(_dispatchers) !== '{}') {
         const dispatch = useDispatch();
 
         const dispatchers = {};
-        Object.keys(_dispatchersSaga).forEach(key => {
-            dispatchers[key] = useCallback(payload => {
-                dispatch({ ..._dispatchersSaga[key], payload });
-            }, []);
+        Object.keys(_dispatchers).forEach(key => {
+            dispatchers[key] = (payload) => {
+                dispatch({ ..._dispatchers[key], payload });
+            };
         });
 
         return dispatchers;
-    } else new Error('Saga use is not enabled');
-}
+    } else throw new Error('Saga use is not enabled');
+};
 
-export const sagaMiddleware = _sagaMiddleware;
-export const set = (key, value) => ({ type: 'set', key, value });
-export const dispatch = _put;
+export const useApply = () => {
+    const dispatch = useDispatch();
+
+    return (key, value) => dispatch(createAction(key, value));
+};
+
+export const createAction = (key, value) => ({ type: APPLY, key, value });
+export const apply = (key, value) => put(createAction(key, value));
 
 export default {
     Container,
     useReducers,
-    useDispatchers,
     useSagas,
-    sagaMiddleware: _sagaMiddleware,
-    set,
-    dispatch: _put,
+    useApply,
+    createAction,
+    apply
 };
