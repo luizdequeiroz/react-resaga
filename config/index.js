@@ -16,7 +16,12 @@ const Container = ({ children, sagas = {}, devtools }) => {
 
     const watchers = [];
     Object.keys(sagas).forEach(key => {
-        const saga = sagas[key];
+
+        function* saga(action) {
+            const sagaReturn = yield sagas[key](action.payload);
+            action.callback && action.callback(sagaReturn, action);
+        }
+
         _dispatchers[key] = ({ type: key });
 
         function* watch() {

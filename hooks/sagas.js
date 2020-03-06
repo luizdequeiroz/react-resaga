@@ -7,8 +7,8 @@ const useSagas = () => {
 
         const dispatchers = {};
         Object.keys(_dispatchers).forEach(key => {
-            dispatchers[key] = (payload) => {
-                dispatch({ ..._dispatchers[key], payload });
+            dispatchers[key] = (payload, callback = null) => {
+                dispatch({ ..._dispatchers[key], payload, callback });
             };
         });
 
