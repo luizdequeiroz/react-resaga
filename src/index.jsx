@@ -17,7 +17,11 @@ function InputValue() {
 function RequestButton() {
     const { request } = useSagas();
 
-    return <button onClick={() => request('Value of request')}>Request</button>
+    return <button onClick={() => request('Value of request', (sagaReturn, action) => {
+        alert(sagaReturn);
+        alert(`action type: '${action.type}'`);
+        alert(`action payload: '${action.payload}'`);
+    })}>Request</button>
 }
 
 function ResultView() {
@@ -26,8 +30,11 @@ function ResultView() {
     return <h3>{value}</h3>;
 }
 
-function* request(action) {
-    yield apply('loading', `Requesting with value: ${action.payload}`);
+function* request(param) {
+    
+    yield apply('loading', `Requesting with value: ${param}`);
+
+    return 'The saga return!';
 }
 
 function App() {

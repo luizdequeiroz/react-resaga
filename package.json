@@ -1,6 +1,6 @@
 {
   "name": "react-resaga",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Generalizing configuration to use of Redux and Saga",
   "main": "index.jsx",
   "author": "Luiz de Queiroz",
