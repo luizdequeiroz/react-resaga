@@ -62,7 +62,7 @@ Generalizing configuration to use of Redux and Saga
     }
 ```
 
-*And with useApply:*
+*And with useSagas and useApply:*
 ```js
     import React, { useEffect } from 'react';
     import { useSagas, useReducers, useApply } from 'react-resaga';
