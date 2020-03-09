@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, useReducers, useSagas, useApply, apply } from '../';
+import { Container, useReducers, useSagas, useApply, apply } from '../../';
 import { render } from 'react-dom';
 
 function Loading() {
