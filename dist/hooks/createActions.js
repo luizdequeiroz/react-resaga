@@ -1,5 +1,13 @@
-import { APPLY } from '../config/actions';
+'use strict';
 
-const createAction = (key, value) => ({ type: APPLY, key, value });
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
-export default createAction;
+var _actions = require('../config/actions');
+
+var createAction = function createAction(key, value) {
+  return { type: _actions.APPLY, key: key, value: value };
+};
+
+exports.default = createAction;
