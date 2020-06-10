@@ -10,7 +10,7 @@ var useReducers = function useReducers() {
     for (var _len = arguments.length, keys = Array(_len), _key = 0; _key < _len; _key++) {
         keys[_key] = arguments[_key];
     }
-debugger;
+    
     var reducers = {};
     keys.forEach(function (key) {
         reducers[key] = (0, _reactRedux.useSelector)(function (state) {
