@@ -1,14 +1,24 @@
-import { _dispatchers } from "../config";
-import { useDispatch } from "react-redux";
+"use strict";
 
-const useSagas = () => {
-    if (JSON.stringify(_dispatchers) !== '{}') {
-        const dispatch = useDispatch();
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 
-        const dispatchers = {};
-        Object.keys(_dispatchers).forEach(key => {
-            dispatchers[key] = (payload, callback = null) => {
-                dispatch({ ..._dispatchers[key], payload, callback });
+var _config = require("../config");
+
+var _reactRedux = require("react-redux");
+
+var useSagas = function useSagas() {
+    if (JSON.stringify(_config._dispatchers) !== '{}') {
+        var dispatch = (0, _reactRedux.useDispatch)();
+
+        var dispatchers = {};
+        Object.keys(_config._dispatchers).forEach(function (key) {
+            dispatchers[key] = function (payload) {
+                var callback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+
+                // dispatch({ ..._dispatchers[key], payload, callback });
+                dispatch({ ..._config._dispatchers[key], payload: payload, callback: callback });
             };
         });
 
@@ -16,4 +26,4 @@ const useSagas = () => {
     } else throw new Error('Saga use is not enabled');
 };
 
-export default useSagas;
+exports.default = useSagas;

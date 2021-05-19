@@ -1,11 +1,22 @@
-import { APPLY } from "./actions";
+"use strict";
 
-export const genericReducer = (state = {}, action) => {
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.genericReducer = undefined;
+
+var _actions = require("./actions");
+
+var genericReducer = exports.genericReducer = function genericReducer() {
+    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+    var action = arguments[1];
+
 
     switch (action.type) {
-        case APPLY:
+        case _actions.APPLY:
             state[action.key] = action.value;
             return state;
-        default: return state;
+        default:
+            return state;
     }
 };
