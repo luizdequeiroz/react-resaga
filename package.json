@@ -1,0 +1,33 @@
+{
+  "name": "react-resaga",
+  "version": "2.0.0",
+  "description": "Generalizing boilerplate for Redux and Saga configuration",
+  "main": "src/index.js",
+  "scripts": {
+    "build": "babel src -d build --out-dir dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/luizdequeiroz/react-resaga.git"
+  },
+  "author": "Luiz de Queiroz",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/luizdequeiroz/react-resaga/issues"
+  },
+  "homepage": "https://github.com/luizdequeiroz/react-resaga#readme",
+  "dependencies": {
+    "react-redux": "^7.2.4",
+    "redux": "^4.1.0",
+    "redux-multi": "^0.1.12",
+    "redux-saga": "^1.1.3",
+    "saga": "^4.0.0-alpha"
+  },
+  "peerDependencies": {
+    "react": "^17.0.2"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0"
+  }
+}
